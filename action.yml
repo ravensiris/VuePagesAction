@@ -29,6 +29,10 @@ inputs:
     description: 'Your custom domain'
     required: false
     default: 'none'
+  branch:
+    description: 'Use different branch'
+    required: false
+    default: 'none'
   useyarn:
     description: 'Use yarn to build'
     required: false
@@ -42,6 +46,7 @@ runs:
   steps:
       - name: Build Vue
         run: |
+              if [ "none" !=  ${{ inputs.branch }} ]; then git checkout ${{ inputs.branch }}; fi
               if [ true ==  ${{ inputs.useyarn }} ]; then yarn install --frozen-lockfile; elif [ true == ${{ inputs.usepnpm }} ]; then pnpm install --frozen-lockfile; else npm ci; fi
               if [ true ==  ${{ inputs.useyarn }} ]; then yarn build; elif [ true == ${{ inputs.usepnpm }} ]; then pnpm build; else npm run build; fi
               cd dist
